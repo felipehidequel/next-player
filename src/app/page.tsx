@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRef } from 'react';
-import { CiPlay1 } from "react-icons/ci";
-import { CiPause1 } from "react-icons/ci";
-
+import { useState, useRef } from "react";
+import { CiPlay1, CiPause1 } from "react-icons/ci";
+import { TbPlayerSkipBackFilled, TbPlayerSkipForwardFilled } from "react-icons/tb";
+import Button from "./button";
 
 export default function Home() {
-  const [playing, setPlaying] = useState<boolean>(true);
+  const [playing, setPlaying] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const playPauseHandler = () => {
@@ -21,19 +20,46 @@ export default function Home() {
     }
   };
 
+  // Function to skip back
+  const skipBackHandler = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 10);
+    }
+  };
+
+  // Function to skip forward
+  const skipForwardHandler = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.min(
+        videoRef.current.duration,
+        videoRef.current.currentTime + 10
+      );
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col items-center">
         <video
           ref={videoRef}
-          src="assets/video.mp4"
-          width="600"
+          src="/assets/video.mp4"
+          className="rounded-md shadow"
+          width="400"
           controls={false}
-          autoPlay={playing}
         />
-        <button onClick={playPauseHandler} className="mt-4 p-2 bg-blue-500 text-white rounded text-4xl">
-          {playing ? <CiPause1 /> : <CiPlay1 />}
-        </button>
+        <div className="gap-4 flex items-center mt-4">
+          <Button func={skipBackHandler}>
+            {<TbPlayerSkipBackFilled />}
+          </Button>
+
+          <Button func={playPauseHandler}>
+            {playing ? <CiPause1 /> : <CiPlay1 />}
+          </Button>
+
+          <Button func={skipForwardHandler}>
+            {<TbPlayerSkipForwardFilled />}
+          </Button>
+        </div>
       </div>
     </div>
   );
